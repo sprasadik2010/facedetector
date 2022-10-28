@@ -2,13 +2,13 @@ import face_recognition
 import os
 import shutil
 import uuid
-import asyncio
+
+from multiprocessing import Pool
 
 
-
-async def finddups(img):
+def finddups(img):
     try:
-        known_image = face_recognition.load_image_file("images\\" + f)
+        known_image = face_recognition.load_image_file("images\\" + img)
         known_encoding = face_recognition.face_encodings(known_image)[0]
         foldername = str(uuid.uuid4())
         os.makedirs(foldername)
@@ -29,6 +29,10 @@ async def finddups(img):
     except:
         results = ""
 
-for f in os.listdir("images"):
-    asyncio.run(finddups(f))
+#for f in os.listdir("images"):
+#    asyncio.run(finddups(f))
 
+if __name__ == '__main__':
+    imglist = os.listdir("images")
+    pool = Pool(os.cpu_count())
+    pool.map(finddups, imglist)  # process data_inputs iterable with pool
